@@ -1,0 +1,67 @@
+default_stages: [pre-commit]
+minimum_pre_commit_version: 3.0.0
+
+exclude: |
+  (?x)^(
+    \.git/.*|
+    \.godot/.*|
+  )$
+
+repos:
+  # ==========================================
+  # Basic File Validation
+  # ==========================================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+        name: Fix End of File
+      - id: check-merge-conflict
+        name: Check for Merge Conflicts
+      - id: check-added-large-files
+        name: Check for Large Files
+        # Limite alto porque o projeto carrega fontes/sprites/audio de jogo.
+        args: ["--maxkb=20000"]
+      - id: detect-private-key
+        name: Detect Private Keys
+
+  # ==========================================
+  # Godot GDScript — lint & format
+  # ==========================================
+  - repo: https://github.com/Scony/godot-gdscript-toolkit
+    rev: 4.3.4
+    hooks:
+      - id: gdlint
+        name: Lint GDScript (gdlint)
+      - id: gdformat
+        name: Format GDScript (gdformat)
+
+  # ==========================================
+  # Godot — integridade de sidecars .import
+  # ==========================================
+  # Um "*.import" cujo nome nao bate mais com o arquivo original (por causa
+  # de uma renomeacao que dessincronizou os dois) quebra a importacao do
+  # recurso no editor. Ver historico deste projeto: e um bug real que ja
+  # aconteceu aqui.
+  - repo: local
+    hooks:
+      - id: check-import-sidecars
+        name: Godot — Sidecars .import orfaos
+        entry: python utils/check_import_sidecars.py
+        language: system
+        files: \.import$
+
+  # ==========================================
+  # Markdown
+  # ==========================================
+  - repo: local
+    hooks:
+      - id: prettier-markdown
+        name: Prettier (Markdown)
+        entry: prettier --write
+        language: node
+        additional_dependencies: ["prettier@3.9.5"]
+        files: \.md$

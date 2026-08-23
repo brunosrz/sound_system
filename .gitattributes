@@ -1,0 +1,14 @@
+# Normaliza terminacao de linha pra LF em todo arquivo de texto,
+# independente do SO, evitando os avisos de "LF will be replaced by CRLF"
+# do Windows e divergencias de diff por causa de finais de linha.
+* text=auto eol=lf
+
+# Binarios explicitos, por garantia (git ja detecta a maioria por
+# heuristica, mas deixamos explicito pros formatos usados no projeto).
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.otf binary
+*.ttf binary
+*.ogg binary
+*.wav binary
